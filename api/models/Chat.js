@@ -6,9 +6,10 @@
 */
 
 module.exports = {
-
-  attributes: {
-
-  }
+  	attributes: {
+  		text : {
+  			type: 'string'
+		}
+	}
 };
 

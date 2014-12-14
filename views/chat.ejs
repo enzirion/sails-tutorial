@@ -1,14 +1,33 @@
 <div class="chat">
-	<input type="text" name="content">
-	<button name="say" value="発言">
+	<input type="text" class="text">
+	<button class="say">発言</button>
 	
-	<ul>
+	<ul class="content_list">
 	</ul>
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-		//alert('hoge');
+		var socket = window.io.connect();
+		socket.on('connect',function(){
+			//watchしてpublishCreateを受け取れるようにする
+			socket.get('/chat/watch');
+
+			socket.on('chat',function(obj){
+				if (obj.verb == 'created') {　//作成された場合
+			    	console.log(obj.data);
+			    	$('.content_list').append('<li>'+obj.data.text+'</li>');
+				}
+			});
+		});
+	})
+
+	//発言ボタン
+	$('button.say').on('click',function(){
+		var text = $('input.text').val();
+		$.post('/chat/create',{text: text});
+		console.log('push text:'+ text);
+		$('input.text').val('');
 	})
 </script>
